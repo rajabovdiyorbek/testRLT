@@ -1,0 +1,29 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background: #1D1D1D;
+
+}
+.wrapper  {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 849px;
+  height: 100vh;
+  padding: 32px;
+  margin: auto;
+  .content {
+    display: flex;
+    gap: 24px;
+  }
+    .close-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    cursor: pointer;
+  }
+}
