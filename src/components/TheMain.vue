@@ -1,28 +1,40 @@
 <template>
   <div class="main-wrapper">
-    <draggable class="main" :list="items" item-key="item">
+    <draggable class="main" :list="items" item-key="item" @change="updateItems">
       <div v-for="item in items" :key="item">
         <template
           class="main-item"
-          @click="item.content ? onClose() : (isModal = false)"
+          @click="item.count > 0 ? selectItem(item) : (isModal = false)"
         >
           <img
             v-if="item.content"
             :src="require(`../assets/img/item-${item.content}.svg`)"
             alt=""
           />
-          <div v-if="item.count" class="main-item__count">
+          <div
+            v-if="item.count >= 0"
+            class="main-item__count"
+            @click.stop="selectItem(item, true)"
+          >
             {{ item.count }}
           </div>
         </template>
       </div>
     </draggable>
-    <BaseModal v-show="isModal" @close="onClose" />
+    <transition-group name="modal"
+      ><BaseModal
+        v-if="isModal"
+        @close="onClose"
+        @delete="onDelete"
+        @update="onUpdate"
+        :selectedItem="selectedItem"
+        :slug="slug"
+    /></transition-group>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { VueDraggableNext as draggable } from "vue-draggable-next";
 import BaseModal from "./BaseModal.vue";
 
@@ -44,75 +56,122 @@ const items = ref([
     count: 6,
   },
   {
-    id: 1,
+    id: 4,
   },
   {
-    id: 2,
+    id: 5,
   },
   {
-    id: 3,
+    id: 6,
   },
   {
-    id: 1,
+    id: 7,
   },
   {
-    id: 2,
+    id: 8,
   },
   {
-    id: 3,
+    id: 9,
   },
   {
-    id: 1,
+    id: 10,
   },
   {
-    id: 2,
+    id: 11,
   },
   {
-    id: 3,
+    id: 12,
   },
   {
-    id: 1,
+    id: 13,
   },
   {
-    id: 2,
+    id: 14,
   },
   {
-    id: 3,
+    id: 15,
   },
   {
-    id: 1,
+    id: 16,
   },
   {
-    id: 2,
+    id: 17,
   },
   {
-    id: 3,
+    id: 18,
   },
   {
-    id: 1,
+    id: 19,
   },
   {
-    id: 2,
+    id: 20,
   },
   {
-    id: 3,
+    id: 21,
   },
   {
-    id: 1,
+    id: 22,
   },
   {
-    id: 2,
+    id: 23,
   },
   {
-    id: 3,
+    id: 24,
   },
   {
-    id: 3,
+    id: 25,
   },
 ]);
 
+const saveItemsToLocalStorage = () => {
+  localStorage.setItem("items", JSON.stringify(items.value));
+};
+
+const loadItemsFromLocalStorage = () => {
+  const savedItems = localStorage.getItem("items");
+  if (savedItems) {
+    items.value = JSON.parse(savedItems);
+  }
+};
+
+onMounted(() => {
+  loadItemsFromLocalStorage();
+});
+
 const onClose = (value) => {
   value ? (isModal.value = value) : (isModal.value = !isModal.value);
+};
+let selectedItem = ref(null);
+let slug = ref(false);
+
+const selectItem = (item, count) => {
+  if (item.content) {
+    selectedItem.value = item;
+    count ? (slug.value = count) : (slug.value = false);
+    isModal.value = true;
+  } else {
+    isModal.value = false;
+  }
+};
+
+const onDelete = ({ itemId, newCount }) => {
+  const itemToUpdate = items.value.find((item) => item.id === itemId);
+  if (itemToUpdate) {
+    itemToUpdate.count = newCount;
+    saveItemsToLocalStorage();
+  }
+};
+
+const onUpdate = ({ itemId, updatedCount }) => {
+  const itemToUpdate = items.value.find((item) => item.id === itemId);
+  if (itemToUpdate) {
+    itemToUpdate.count = updatedCount;
+    saveItemsToLocalStorage();
+  }
+};
+
+const updateItems = () => {
+  saveItemsToLocalStorage();
 };
 </script>
 
@@ -127,6 +186,7 @@ const onClose = (value) => {
   overflow: hidden;
   &-wrapper {
     position: relative;
+    overflow: hidden;
   }
   &-item {
     position: relative;
@@ -153,5 +213,17 @@ const onClose = (value) => {
       border-radius: 6px 0px 0px 0px;
     }
   }
+  &-item:hover {
+    background: #2f2f2f;
+  }
+}
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.5s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+  transform: translateX(100%);
 }
 </style>

@@ -1,13 +1,17 @@
 <template>
   <div class="footer">
-    <div class="footer-content">hi</div>
+    <div class="footer-content">
+      <TheSkeleton :width="699" :height="36" />
+    </div>
     <div class="close-button">
       <img src="../assets/icons/close-icon.svg" />
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import TheSkeleton from "./TheSkeleton.vue";
+</script>
 
 <style lang="scss" scoped>
 .footer {

@@ -1,17 +1,24 @@
 <template>
   <div class="side-component">
     <img src="../assets/img/nicebg.jpg" alt="sidebar img" />
+    <TheSkeleton :width="200" :height="30" />
+    <TheSkeleton :width="200" :height="10" />
+    <TheSkeleton :width="200" :height="10" />
+    <TheSkeleton :width="200" :height="10" />
+    <TheSkeleton :width="180" :height="10" />
+    <TheSkeleton :width="80" :height="10" />
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import TheSkeleton from "./TheSkeleton.vue";
+</script>
 
 <style lang="scss" scoped>
 .side-component {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
   width: 236px;
   height: 500px;
   padding: 18px 14px 24px 14px;
